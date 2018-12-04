@@ -21,8 +21,11 @@ import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 import iotucm.coffeeservice.CapsuleConsumedReply;
 import iotucm.coffeeservice.CapsuleConsumedRequest;
+import iotucm.coffeeservice.MachineStatus;
+import iotucm.coffeeservice.AnalysisResults;
 import iotucm.coffeeservice.CoffeeServerGrpc;
 import iotucm.coffeeservice.*;
+import iotucm.coffeeservice.CoffeeServerClient;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -75,30 +78,37 @@ public class CoffeeServiceServer {
     final CoffeeServiceServer server = new CoffeeServiceServer();
     int port = 50051;
     if (args.length > 0) {
-    	port=Integer.parseInt(args[0]);
+      port=Integer.parseInt(args[0]);
     }
     server.start(port);
     server.blockUntilShutdown();
   }
 
   static class CofeeServerImpl extends CoffeeServerGrpc.CoffeeServerImplBase {
-    static int counter=10;	  
-	@Override
-	public void consumedCapsule(CapsuleConsumedRequest request, StreamObserver<CapsuleConsumedReply> responseObserver) {
-		// Never call super methods, otherwise you will get "call is closed" and "unimplemented method" errors
-	
-	    CapsuleConsumedReply reply = null;
-	    if (counter>5) {
-	    	reply=CapsuleConsumedReply.newBuilder().setExpectedRemaining(counter).setExpectedProvisionDate("No need, yet").build();	    
-	    } else {
-	    	reply=CapsuleConsumedReply.newBuilder().setExpectedProvisionDate("11 of november of 2019").setExpectedRemaining(counter).build();
-	    	counter=10;
-	    }
-	    counter=counter-1;
-	    
-	    responseObserver.onNext(reply);
-	    responseObserver.onCompleted();
-	}
-  
+    static int counter=10;    
+    @Override
+    public void consumedCapsule(CapsuleConsumedRequest request, StreamObserver<CapsuleConsumedReply> responseObserver) {
+      // Never call super methods, otherwise you will get "call is closed" and "unimplemented method" errors
+    
+        CapsuleConsumedReply reply = null;
+        if (counter>5) {
+          reply=CapsuleConsumedReply.newBuilder().setExpectedRemaining(counter).setExpectedProvisionDate("No need, yet").build();     
+        } else {
+          reply=CapsuleConsumedReply.newBuilder().setExpectedProvisionDate("11 of november of 2019").setExpectedRemaining(counter).build();
+          counter=10;
+        }
+        counter=counter-1;
+        
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+    @Override
+    public void checkMachineStatus(MachineStatus request, StreamObserver<AnalysisResults> responseObserver){
+        AnalysisResults reply = null;
+        reply = AnalysisResults.newBuilder().setWhatWrong("Esta todo mal").setIsFine(false).setExpectedDate("18-12-2019").build();
+                
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
   }
 }

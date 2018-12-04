@@ -25,8 +25,11 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import iotucm.coffeeservice.CapsuleConsumedReply;
 import iotucm.coffeeservice.CapsuleConsumedRequest;
+import iotucm.coffeeservice.MachineStatus;
+import iotucm.coffeeservice.AnalysisResults;
 import iotucm.coffeeservice.CoffeeServerGrpc;
 import iotucm.coffeeservice.*;
+import iotucm.coffeeservice.CoffeeServiceServer;
 
 /**
  * A simple client that requests a greeting from the {@link CoffeeServerServer}.
@@ -70,35 +73,68 @@ public class CoffeeServerClient {
     if (response.getSupplyProvisioned()!=0)
       logger.info("Result: expect a new deliver by " + response.getExpectedProvisionDate());
     else 
-    	logger.info("There is still coffee. Expected remaining " + response.getExpectedRemaining());
+      logger.info("There is still coffee. Expected remaining " + response.getExpectedRemaining());
+  }
+
+  /** Information is required */
+  public void askMachineStatus(  float waterTemperature, long timeConnected, float pressure){
+    logger.info("Sending out the request of machine status " + waterTemperature +", "+ timeConnected +", "+ pressure);
+    MachineStatus request = MachineStatus.newBuilder().setWaterTemperature(waterTemperature).setTimeConnected(timeConnected).setPressure(pressure).build();
+    AnalysisResults response;
+    try {
+      response = blockingStub.checkMachineStatus(request);
+    } catch (StatusRuntimeException e) {
+      logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+      return;
+    }
+    if (!response.getIsFine())
+      logger.info("Está todo mal");
+    else 
+      logger.info("Está todo bien");
   }
 
   /**
    * Coffee server code. The first argument is the client id, the second, the capsule type, the fourth the server ip, the fifth the port.
    */
   public static void main(String[] args) throws Exception {
-	  String clientid = "myclientid";
-      String capsuletype= "ristretto";
-      int port=50051;
-      String host="localhost";
-      if (args.length > 0) {
-    	  clientid = args[0]; /* First argument is the clientid */
-      }
-      if (args.length > 1) {
-    	  capsuletype = args[1]; /* second argument is the capsule type */
-      }
-      
-      if (args.length > 2) {
-    	  host = args[2]; /* third argument is the host */      
-      }
-      
-      if (args.length > 3) {
-    	  port = Integer.parseInt(args[3]); /* fourth argument is the listening port */
-      }
+    String clientid = "myclientid";
+    String capsuletype= "ristretto";
+    float waterTemperature = 20;
+    long connectedTime = 60;
+    float pressure = 470;
+    int port=50051;
+    String host="localhost";
+    if (args.length > 0) {
+      clientid = args[0]; /* First argument is the clientid */
+    }
+    if (args.length > 1) {
+      capsuletype = args[1]; /* second argument is the capsule type */
+    }
+    
+    if (args.length > 2) {
+      waterTemperature = Float.valueOf(args[2]); /* third argument is the water temperature */      
+    }
+
+    if (args.length > 3) {
+      connectedTime = Long.parseLong(args[3]); /* fourth argument is the connected time */      
+    }
+
+    if (args.length > 4) {
+      pressure = Float.valueOf(args[4]); /* fifth argument is the pressure */      
+    }
+
+    if (args.length > 5) {
+      host = args[5]; /* sixth argument is the host */      
+    }
+    
+    if (args.length > 6) {
+      port = Integer.parseInt(args[6]); /* seventh argument is the listening port */
+    }
       
     CoffeeServerClient client = new CoffeeServerClient(host, port);
     try {      
       client.consumeCapsule(clientid,capsuletype);
+      client.askMachineStatus(waterTemperature, connectedTime, pressure);
     } finally {
       client.shutdown();
     }

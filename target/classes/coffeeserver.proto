@@ -1,0 +1,56 @@
+// Copyright 2018 Jorge J. Gomez-Sanz
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "iotucm.coffeeservice";
+option java_outer_classname = "CoffeeServerProto";
+option objc_class_prefix = "HLW";
+
+package coffeeserver;
+
+// The cofee machine service definition
+service CoffeeServer {
+  // Informs  a capsule was consumed
+  rpc consumedCapsule(CapsuleConsumedRequest) returns (CapsuleConsumedReply) {}
+  // Check machine status
+  rpc checkMachineStatus(MachineStatus) returns (AnalysisResults){}
+}
+
+// The capsule consumption signal
+message CapsuleConsumedRequest {
+  string clientid=1;
+  string type=2;
+}
+
+// The answer from the server
+message CapsuleConsumedReply {
+  int32 expectedRemaining = 3;
+  int32 supplyProvisioned = 4;
+  string expectedProvisionDate = 5;
+}
+
+// The answer from the server
+message MachineStatus {
+  float waterTemperature = 6;
+  int64 timeConnected = 7;
+  float pressure = 8;
+}
+
+message AnalysisResults {
+  bool isFine = 9;
+  string whatWrong= 10;
+  string expectedDate= 11;
+}
