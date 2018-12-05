@@ -87,10 +87,12 @@ public class CoffeeServerClient {
       logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
       return;
     }
-    if (!response.getIsFine())
-      logger.info("Está todo mal");
-    else 
+    if (!response.getIsFine()) {
+      logger.info(response.getWhatWrong());
+      logger.info("Expected date to deliver a technician: " + response.getExpectedDate());
+    } else {
       logger.info("Está todo bien");
+    }
   }
 
   /**
