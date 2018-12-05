@@ -101,7 +101,7 @@ public class CoffeeServerClient {
   public static void main(String[] args) throws Exception {
     String clientid = "myclientid";
     String capsuletype= "ristretto";
-    float waterTemperature = 20;
+    float waterTemperature = 100;
     long connectedTime = 60;
     float pressure = 470;
     int port=50051;

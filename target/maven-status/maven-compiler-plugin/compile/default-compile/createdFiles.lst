@@ -4,8 +4,8 @@ iotucm/coffeeservice/MachineStatus$1.class
 iotucm/coffeeservice/AnalysisResults$Builder.class
 iotucm/coffeeservice/CoffeeServerGrpc$MethodHandlers.class
 iotucm/coffeeservice/CoffeeServerGrpc$CoffeeServerFileDescriptorSupplier.class
-iotucm/coffeeservice/CapsuleConsumedReply.class
 iotucm/coffeeservice/AnalysisResultsOrBuilder.class
+iotucm/coffeeservice/CapsuleConsumedReply.class
 iotucm/coffeeservice/CapsuleConsumedReplyOrBuilder.class
 iotucm/coffeeservice/CoffeeServerGrpc$CoffeeServerMethodDescriptorSupplier.class
 iotucm/coffeeservice/CoffeeServerGrpc$1.class
@@ -14,8 +14,8 @@ iotucm/coffeeservice/MachineStatus.class
 iotucm/coffeeservice/CoffeeServiceServer$CofeeServerImpl.class
 iotucm/coffeeservice/CapsuleConsumedRequest$1.class
 iotucm/coffeeservice/CoffeeServerGrpc$CoffeeServerBlockingStub.class
-iotucm/coffeeservice/CoffeeServiceServer$1.class
 iotucm/coffeeservice/AnalysisResults.class
+iotucm/coffeeservice/CoffeeServiceServer$1.class
 iotucm/coffeeservice/CapsuleConsumedReply$Builder.class
 iotucm/coffeeservice/CoffeeServerGrpc.class
 iotucm/coffeeservice/CoffeeServiceServer.class

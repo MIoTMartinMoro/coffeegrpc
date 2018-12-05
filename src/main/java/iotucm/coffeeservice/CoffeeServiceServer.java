@@ -29,6 +29,7 @@ import iotucm.coffeeservice.CoffeeServerClient;
 
 import java.io.IOException;
 import java.util.logging.Logger;
+import java.util.Date;
 
 /**
  * Coffee service implementation
@@ -105,8 +106,31 @@ public class CoffeeServiceServer {
     @Override
     public void checkMachineStatus(MachineStatus request, StreamObserver<AnalysisResults> responseObserver){
         AnalysisResults reply = null;
-        reply = AnalysisResults.newBuilder().setWhatWrong("Esta todo mal").setIsFine(false).setExpectedDate("18-12-2019").build();
-                
+        String errorMsg = "Errors: \n";
+        /*if (request.getWaterTemperature() > 4) {
+          reply = AnalysisResults.newBuilder().setWhatWrong("Esta todo mal").setIsFine(false).setExpectedDate("18-12-2019").build();
+          } else {
+            reply = AnalysisResults.newBuilder().setIsFine(true).build();
+          }*/
+
+        if (request.getWaterTemperature() < 70) {
+          errorMsg += "- Water temperature too low\n";
+        } else if (request.getWaterTemperature() > 100) {
+          errorMsg += "- Water temperature too high\n";
+        }
+        if (request.getPressure() < 200) {
+          errorMsg += "- Pressure too low\n";
+        } else if (request.getPressure() > 600) {
+          errorMsg += "- Pressure too high\n";
+        }
+
+        if (errorMsg != "Errors: \n") {
+          Date now = new Date();
+          Date expectedDate = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
+          reply = AnalysisResults.newBuilder().setWhatWrong(errorMsg).setIsFine(false).setExpectedDate(expectedDate.toString()).build();
+        } else {
+          reply = AnalysisResults.newBuilder().setIsFine(true).build();
+        }
         responseObserver.onNext(reply);
         responseObserver.onCompleted();
     }
